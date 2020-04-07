@@ -1,7 +1,10 @@
 package service;
 
-import DAO.UserDAO;
+import DAO.UserHibernateDAO;
+import DAO.UserJdbcDAO;
 import model.User;
+import org.hibernate.SessionFactory;
+import util.DBHelper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -10,30 +13,32 @@ public class UserService {
 
     private static UserService userService;
 
-    private UserDAO userDAO;
+    private SessionFactory sessionFactory;
 
-    private UserService(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    private UserService(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    public static UserService getInstance() throws SQLException {
-
-        return userService==null?new UserService(new UserDAO(UserDAO.getConnection())):userService;
+    public static UserService getInstance() {
+        if (userService == null) {
+            userService = new UserService(DBHelper.getSessionFactory());
+        }
+        return userService;
     }
 
     public List<User> getAllUsers() throws SQLException {
-        return userDAO.getAllUsers();
+        return new UserHibernateDAO(sessionFactory.openSession()).getAllUsers();
     }
 
     public void addUser(User user) throws SQLException {
-        userDAO.addUser(user);
+        new UserHibernateDAO(sessionFactory.openSession()).addUser(user);
     }
 
     public void deleteUser(Long id) throws SQLException {
-        userDAO.deleteUser(id);
+        new UserHibernateDAO(sessionFactory.openSession()).deleteUser(id);
     }
 
     public void updateUser(String name,Long id) throws SQLException {
-        userDAO.updateUser(name,id);
+        new UserHibernateDAO(sessionFactory.openSession()).updateUser(name,id);
     }
 }
