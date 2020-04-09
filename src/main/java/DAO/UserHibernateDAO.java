@@ -2,6 +2,7 @@ package DAO;
 
 import model.User;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import util.DBHelper;
 
@@ -10,12 +11,14 @@ import java.util.List;
 
 public class UserHibernateDAO implements UserDAO {
 
+    private SessionFactory sessionFactory;
     public UserHibernateDAO() {
+        this.sessionFactory=DBHelper.getSessionFactory();
     }
 
     @Override
     public List<User> getAllUsers() {
-        Session session = DBHelper.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         List<User> res = session.createQuery("FROM User").list();
         transaction.commit();
@@ -25,7 +28,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        Session session = DBHelper.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.save(user);
         transaction.commit();
@@ -34,7 +37,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void deleteUser(Long id) {
-        Session session = DBHelper.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.createQuery("delete from User where id=:id").setParameter("id", id).executeUpdate();
         transaction.commit();
@@ -43,7 +46,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void updateUser(String firstName, String lastName, Long id) {
-        Session session = DBHelper.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.createQuery("update from User u set u.firstName=:firstName, u.lastName=:lastName where id=:id").
                 setParameter("id", id).
@@ -55,7 +58,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public User getUserById(Long id) {
-        Session session = DBHelper.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         List<User> users = session.createQuery("from User where id=:id").
                 setParameter("id", id).list();

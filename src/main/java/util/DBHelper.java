@@ -15,10 +15,6 @@ import java.sql.SQLException;
 
 public class DBHelper {
 
-    public static Session getSession() {
-        return sessionFactory.openSession();
-    }
-
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
