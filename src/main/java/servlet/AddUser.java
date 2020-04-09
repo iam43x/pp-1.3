@@ -17,14 +17,20 @@ public class AddUser extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name=req.getParameter("name");
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
         try {
-            UserService.getInstance().addUser(new User(name));
-            List<User> users=UserService.getInstance().getAllUsers();
-            req.setAttribute("users",users);
+            UserService.getInstance().addUser(new User(firstName, lastName));
+            List<User> users = UserService.getInstance().getAllUsers();
+            req.setAttribute("users", users);
             req.getRequestDispatcher("users.jsp").forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("create.jsp").forward(req, resp);
     }
 }

@@ -1,20 +1,32 @@
 package util;
 
+import DAO.UserJdbcDAO;
 import model.User;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class DBHelper {
 
-    private static SessionFactory sessionFactory;
+    public static Session getSession() {
+        return sessionFactory.openSession();
+    }
 
     public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = createSessionFactory();
-        }
         return sessionFactory;
+    }
+
+    private static final SessionFactory sessionFactory;
+
+    static {
+        sessionFactory = createSessionFactory();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -29,7 +41,7 @@ public class DBHelper {
         configuration.setProperty("hibernate.connection.username", "web3");
         configuration.setProperty("hibernate.connection.password", "m8MoKaFmlLqD");
         configuration.setProperty("hibernate.show_sql", "true");
-        configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+        configuration.setProperty("hibernate.hbm2ddl.auto", "create-update");
 
         return configuration;
     }
@@ -40,6 +52,25 @@ public class DBHelper {
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
         return configuration.buildSessionFactory(serviceRegistry);
+    }
+
+    public static Connection getConnection() {
+        try {
+            DriverManager.registerDriver((Driver) Class.forName("com.mysql.cj.jdbc.Driver").newInstance());
+
+            StringBuilder url = new StringBuilder();
+            url.append("jdbc:mysql://").
+                    append("localhost:").
+                    append("3306/").
+                    append("preproject?").
+                    append("user=web3&").
+                    append("password=m8MoKaFmlLqD");
+            Connection connection = DriverManager.getConnection(url.toString());
+            return connection;
+        } catch (InstantiationException | SQLException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new IllegalStateException();
+        }
     }
 
 }

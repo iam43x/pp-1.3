@@ -3,7 +3,7 @@ package model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user_db")
 public class User {
 
     @Id
@@ -11,19 +11,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
 
     public User() {
     }
 
-    public User(String name) {
-      this.name = name;
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public User(Long id, String name) {
+    public String getLastName() {
+        return lastName;
+    }
+
+    public User(Long id, String firstName, String lastName) {
+        this(firstName, lastName);
         this.id = id;
-        this.name = name;
     }
 
     public Long getId() {
@@ -34,19 +42,19 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + firstName + '\'' +
                 '}';
     }
 }

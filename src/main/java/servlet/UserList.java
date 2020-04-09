@@ -18,8 +18,8 @@ public class UserList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<User> users=UserService.getInstance().getAllUsers();
-            req.setAttribute("users",users);
+            List<User> users = UserService.getInstance().getAllUsers();
+            req.setAttribute("users", users);
             req.getRequestDispatcher("users.jsp").forward(req, resp);
         } catch (SQLException e) {
             e.printStackTrace();

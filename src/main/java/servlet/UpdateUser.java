@@ -16,16 +16,29 @@ import java.util.List;
 public class UpdateUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-      String name=req.getParameter("name");
-      try{
-          Long id=Long.parseLong(req.getParameter("id"));
-          UserService.getInstance().updateUser(name,id);
-          List<User> users=UserService.getInstance().getAllUsers();
-          req.setAttribute("users",users);
-          req.getRequestDispatcher("users.jsp").forward(req, resp);
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
+        try {
+            Long id = Long.parseLong(req.getParameter("id"));
+            UserService.getInstance().updateUser(firstName, lastName, id);
+            List<User> users = UserService.getInstance().getAllUsers();
+            req.setAttribute("users", users);
+            req.getRequestDispatcher("users.jsp").forward(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            Long id = Long.parseLong(req.getParameter("id"));
+            User user = UserService.getInstance().getUserById(id);
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("update.jsp").forward(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
