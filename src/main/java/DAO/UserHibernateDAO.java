@@ -29,6 +29,7 @@ public class UserHibernateDAO implements UserDAO {
         Transaction transaction = session.beginTransaction();
         session.save(user);
         transaction.commit();
+        session.close();
     }
 
     @Override
